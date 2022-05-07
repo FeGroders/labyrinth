@@ -1,51 +1,99 @@
 var udp = require('dgram');
-
-// --------------------creating a udp server --------------------
-
-// creating a udp server
 var server = udp.createSocket('udp4');
+var matrix = [];
 
-// emits when any error occurs
-server.on('error',function(error){
+server.on('error', function (error) {
   console.log('Error: ' + error);
   server.close();
 });
 
-// emits on new datagram msg
-server.on('message',function(msg,info){
+server.on('message', function (msg, info) {
   console.log('Data received from client : ' + msg.toString());
-  console.log('Received %d bytes from %s:%d\n',msg.length, info.address, info.port);
+  moveHero(msg.toString());
+  console.log('\n\n');
+  printMatrix();
 
-//sending msg
-server.send(msg,info.port,'localhost',function(error){
-  if(error){
-    client.close();
-  }else{
-    console.log('Data sent !!!');
-  }
-
+  server.send(msg, info.port, 'localhost', function (error) {
+    if (error) {
+      client.close();
+    }
+  });
 });
 
+server.on('listening', function () {
+  // var address = server.address();
+  // var port = address.port;
+  // var family = address.family;
+  // var ipaddr = address.address;
+  // console.log('Server is listening at port' + port);
+  // console.log('Server ip :' + ipaddr);
+  // console.log('Server is IP4/IP6 : ' + family);
+
+  createMatrix(10, 10);
+  printMatrix();
 });
 
-//emits when socket is ready and listening for datagram msgs
-server.on('listening',function(){
-  var address = server.address();
-  var port = address.port;
-  var family = address.family;
-  var ipaddr = address.address;
-  console.log('Server is listening at port' + port);
-  console.log('Server ip :' + ipaddr);
-  console.log('Server is IP4/IP6 : ' + family);
-});
-
-//emits after the socket is closed using socket.close();
-server.on('close',function(){
+server.on('close', function () {
   console.log('Socket is closed !');
 });
 
 server.bind(2222);
 
-// setTimeout(function(){
-//   server.close();
-// },8000);
+function createMatrix(rows, cols) {
+  // matrix = [];
+  for (var i = 0; i < rows; i++) {
+    matrix[i] = [];
+    for (var j = 0; j < cols; j++) {
+      if (i == 0 && j == 0) {
+        matrix[i][j] = 'H';
+      } else {
+        matrix[i][j] = getBombOrEmpty();
+      }
+    }
+  }
+  addExit(matrix);
+}
+
+function getMatrix() {
+  return matrix;
+}
+
+function printMatrix() {
+  for (var i = 0; i < matrix.length; i++) {
+    for (var j = 0; j < matrix[i].length; j++) {
+      process.stdout.write(matrix[i][j] + ' ');
+    }
+    process.stdout.write('\n');
+  }
+}
+
+function getBombOrEmpty() {
+  var bombOrEmpty = Math.floor(Math.random() * 3);
+  if (bombOrEmpty == 0) {
+    return '*';
+  } else {
+    return '0';
+  }
+}
+
+function addExit(matrix) {
+  var exit = Math.floor(Math.random() * matrix.length);
+  var exit2 = Math.floor(Math.random() * matrix.length);
+  matrix[exit][exit2] = 'E';
+}
+
+function moveHero(command) {
+  if (command == 'W') {
+    matrix[1][1] = '0';
+    matrix[0][1] = 'H';
+  } else if (command.toUpperCase() == 'S') {
+    matrix[0][0] = '0';
+    matrix[0][1] = 'H';
+  } else if (command.toUpperCase() == 'A') {
+    matrix[0][0] = '0';
+    matrix[0][1] = 'H';
+  } else if (command.toUpperCase() == 'D') {
+    matrix[0][0] = '0';
+    matrix[0][1] = 'H';
+  }
+}
