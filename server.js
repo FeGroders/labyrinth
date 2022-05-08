@@ -1,6 +1,10 @@
 var udp = require('dgram');
 var server = udp.createSocket('udp4');
 var matrix = [];
+var cols = 10;
+var rows = 10;
+var heroX = 0; //^
+var heroY = 0; //>
 
 server.on('error', function (error) {
   console.log('Error: ' + error);
@@ -9,7 +13,8 @@ server.on('error', function (error) {
 
 server.on('message', function (msg, info) {
   console.log('Data received from client : ' + msg.toString());
-  moveHero(msg.toString());
+  moveHero(msg);
+  console.log(msg.toString())
   // console.log('\n\n');
   printMatrix();
 
@@ -21,15 +26,15 @@ server.on('message', function (msg, info) {
 });
 
 server.on('listening', function () {
-  // var address = server.address();
-  // var port = address.port;
-  // var family = address.family;
-  // var ipaddr = address.address;
-  // console.log('Server is listening at port' + port);
-  // console.log('Server ip :' + ipaddr);
-  // console.log('Server is IP4/IP6 : ' + family);
+  var address = server.address();
+  var port = address.port;
+  var family = address.family;
+  var ipaddr = address.address;
+  console.log('Server is listening at port: ' + port);
+  console.log('Server ip: ' + ipaddr);
+  console.log('Server is IP4/IP6: ' + family);
 
-  createMatrix(10, 10);
+  createMatrix(rows, cols);
   printMatrix();
 });
 
@@ -52,10 +57,6 @@ function createMatrix(rows, cols) {
     }
   }
   addExit(matrix);
-}
-
-function getMatrix() {
-  return matrix;
 }
 
 function printMatrix() {
@@ -83,19 +84,21 @@ function addExit(matrix) {
 }
 
 function moveHero(command) {
-  console.log(command);
-  console.log(command === 'W');
-  if (command.toUpperCase == 'W') {
+  if (command == 'W' && heroY < rows) {
     console.log('move up');
+    heroY++;
     matrix[1][1] = '0';
     matrix[0][1] = 'H';
-  } else if (command.toUpperCase() == 'S') {
+  } else if (command.toUpperCase == 'S'  && heroY > 0) {
+    heroY--;
     matrix[0][0] = '0';
     matrix[0][1] = 'H';
-  } else if (command.toUpperCase() == 'A') {
+  } else if (command.toUpperCase == 'A'  && heroY > 0) {
+    heroX--;
     matrix[0][0] = '0';
     matrix[0][1] = 'H';
-  } else if (command.toUpperCase() == 'D') {
+  } else if (command.toUpperCase == 'D'  && heroY < cols) {
+    heroX++;
     matrix[0][0] = '0';
     matrix[0][1] = 'H';
   }
