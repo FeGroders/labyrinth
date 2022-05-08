@@ -10,7 +10,7 @@ server.on('error', function (error) {
 server.on('message', function (msg, info) {
   console.log('Data received from client : ' + msg.toString());
   moveHero(msg.toString());
-  console.log('\n\n');
+  // console.log('\n\n');
   printMatrix();
 
   server.send(msg, info.port, 'localhost', function (error) {
@@ -83,7 +83,10 @@ function addExit(matrix) {
 }
 
 function moveHero(command) {
-  if (command == 'W') {
+  console.log(command);
+  console.log(command === 'W');
+  if (command.toUpperCase == 'W') {
+    console.log('move up');
     matrix[1][1] = '0';
     matrix[0][1] = 'H';
   } else if (command.toUpperCase() == 'S') {
