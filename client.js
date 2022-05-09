@@ -10,7 +10,7 @@ client.on('message', function (msg, info) {
 function sendCommand(command) {
   // var data = Buffer.from(command);
   // client.send(data, 2222, 'localhost', function (error) {
-  client.send(Buffer.from(command), 2222, 'localhost', function (error) {
+  client.send(Buffer.from(command, "utf-8"), 2222, 'localhost', function (error) {
     if (error) {
       client.close();
     }

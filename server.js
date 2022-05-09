@@ -84,12 +84,15 @@ function addExit(matrix) {
 }
 
 function moveHero(command) {
-  if (command == 'W' && heroY < rows) {
-    console.log('move up');
+  console.log('type: ', typeof command.toString());
+  console.log('type: ', typeof 'W');
+  console.log(command.toString() == 'W');
+  console.log('command: ', command.toString())
+  if (command.toString() == 'W' && heroY > 0) {
     heroY++;
     matrix[1][1] = '0';
     matrix[0][1] = 'H';
-  } else if (command.toUpperCase == 'S'  && heroY > 0) {
+  } else if (command.toUpperCase == 'S'  && heroY < rows) {
     heroY--;
     matrix[0][0] = '0';
     matrix[0][1] = 'H';
