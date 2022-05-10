@@ -1,9 +1,14 @@
 var udp = require('dgram');
-// var readline = require('readline');
+var readline = require('readline');
+
+// creating a client socket
 var client = udp.createSocket('udp4');
 
 client.on('message', function (msg, info) {
   // console.log('Data received from server : ' + msg.toString());
+  rl.question('Digite o próximo comando: ', function (answer) {
+    sendCommand(answer);
+  });
 });
 
 function sendCommand(command) {
@@ -14,26 +19,11 @@ function sendCommand(command) {
   });
 }
 
-// const rl = readline.createInterface({
-//   input: process.stdin,
-//   output: process.stdout
-// });
-
-process.stdin.on('data', function (data) {
-  sendCommand(data.toString());
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
 });
 
-// function init() {
-//   new Promise((resolve, reject) => {
-//     rl.question('Digite uma tecla para continuar: ', (answer) => {
-//       resolve(answer);
-//     }
-//     );
-//   }).then((answer) => {
-//     sendCommand(answer);
-//     init();
-//   }
-//   );
-// }
-  
-// init();
+rl.question('Digite o próximo comando: ', function (answer) {
+  sendCommand(answer);
+});

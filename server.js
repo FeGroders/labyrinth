@@ -1,7 +1,6 @@
 var udp = require('dgram');
 var server = udp.createSocket('udp4');
 var matrix = [];
-
 var cols = 10;
 var rows = 10;
 
