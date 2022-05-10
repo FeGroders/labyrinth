@@ -100,13 +100,14 @@ function moveHero(command) {
 
   if (command == 'W' && hero.y > 0) {
     hero.y--;
-  } else if (command == 'S'  && hero.y < rows) {
+  } else if (command == 'S'  && hero.y < rows-1) {
     hero.y++;
   } else if (command == 'A'  && hero.x > 0) {
     hero.x--;
-  } else if (command == 'D'  && hero.x < cols) {
+  } else if (command == 'D'  && hero.x < cols-1) {
     hero.x++;
   }
+  
   if (matrix[hero.y][hero.x] != '0') {
     return matrix[hero.y][hero.x];
   } else { 

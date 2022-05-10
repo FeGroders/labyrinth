@@ -16,11 +16,12 @@ client.on('message', function (msg, info) {
   }
 
   if (msg.toString() == '*') {
-    console.log('Bomb has been planted !');
+    console.log('Você pisou em uma bomba e perdeu :(');
   } else if (msg.toString() == 'E') {
-    console.log('Win !');
+    console.log('Você ganhou :)');
   }
   client.close();
+  process.exit(0);
 });
 
 function sendCommand(command) {
