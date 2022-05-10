@@ -20,14 +20,13 @@ server.on('error', function (error) {
 });
 
 server.on('message', function (msg, info) {
-  console.log('Data received from client : ' + msg.toString());
+  // console.log('Data received from client : ' + msg.toString());
   command = msg.toString();
-  moveHero(command);
-  console.log(command)
-  // console.log('\n\n');
+  var movement = moveHero(command);
+  console.log('\n\n');
   printMatrix();
 
-  server.send(msg, info.port, 'localhost', function (error) {
+  server.send(movement, info.port, 'localhost', function (error) {
     if (error) {
       client.close();
     }
@@ -94,8 +93,10 @@ function addExit(matrix) {
 }
 
 function moveHero(command) {
-  console.log('command: ', command)
-  matrix[hero.y][hero.x] = '0';
+  var oldHero = {
+    x: hero.x,
+    y: hero.y
+  }
 
   if (command == 'W' && hero.y > 0) {
     hero.y--;
@@ -106,7 +107,13 @@ function moveHero(command) {
   } else if (command == 'D'  && hero.x < cols) {
     hero.x++;
   }
-  matrix[hero.y][hero.x] = 'H';
+  if (matrix[hero.y][hero.x] != '0') {
+    return matrix[hero.y][hero.x];
+  } else { 
+    matrix[oldHero.y][oldHero.x] = '0';
+    matrix[hero.y][hero.x] = 'H';
+    return '0';
+  }
 }
 
 function isBombOrExit(matrix) {
