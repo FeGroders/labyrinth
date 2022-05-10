@@ -1,10 +1,19 @@
 var udp = require('dgram');
 var server = udp.createSocket('udp4');
 var matrix = [];
+
 var cols = 10;
 var rows = 10;
-var heroX = 0; //^
-var heroY = 0; //>
+
+bomb = {
+  x: 0,
+  y: 0
+}
+
+hero = {
+  x: 0,
+  y: 0
+}
 
 server.on('error', function (error) {
   console.log('Error: ' + error);
@@ -13,8 +22,9 @@ server.on('error', function (error) {
 
 server.on('message', function (msg, info) {
   console.log('Data received from client : ' + msg.toString());
-  moveHero(msg);
-  console.log(msg.toString())
+  command = msg.toString();
+  moveHero(command);
+  console.log(command)
   // console.log('\n\n');
   printMatrix();
 
@@ -45,14 +55,15 @@ server.on('close', function () {
 server.bind(2222);
 
 function createMatrix(rows, cols) {
-  // matrix = [];
   for (var i = 0; i < rows; i++) {
     matrix[i] = [];
     for (var j = 0; j < cols; j++) {
-      if (i == 0 && j == 0) {
-        matrix[i][j] = 'H';
+      if (i == hero.x && j == hero.y) {
+        matrix[hero.x][hero.y] = 'H';
       } else {
         matrix[i][j] = getBombOrEmpty();
+        bomb.x = i;
+        bomb.y = j;
       }
     }
   }
@@ -84,25 +95,21 @@ function addExit(matrix) {
 }
 
 function moveHero(command) {
-  console.log('type: ', typeof command.toString());
-  console.log('type: ', typeof 'W');
-  console.log(command.toString() == 'W');
-  console.log('command: ', command.toString())
-  if (command.toString() == 'W' && heroY > 0) {
-    heroY++;
-    matrix[1][1] = '0';
-    matrix[0][1] = 'H';
-  } else if (command.toUpperCase == 'S'  && heroY < rows) {
-    heroY--;
-    matrix[0][0] = '0';
-    matrix[0][1] = 'H';
-  } else if (command.toUpperCase == 'A'  && heroY > 0) {
-    heroX--;
-    matrix[0][0] = '0';
-    matrix[0][1] = 'H';
-  } else if (command.toUpperCase == 'D'  && heroY < cols) {
-    heroX++;
-    matrix[0][0] = '0';
-    matrix[0][1] = 'H';
+  console.log('command: ', command)
+  matrix[hero.y][hero.x] = '0';
+
+  if (command == 'W' && hero.y > 0) {
+    hero.y--;
+  } else if (command == 'S'  && hero.y < rows) {
+    hero.y++;
+  } else if (command == 'A'  && hero.x > 0) {
+    hero.x--;
+  } else if (command == 'D'  && hero.x < cols) {
+    hero.x++;
   }
+  matrix[hero.y][hero.x] = 'H';
+}
+
+function isBombOrExit(matrix) {
+  return matrix == '*' ? true : false;
 }

@@ -1,15 +1,12 @@
 var udp = require('dgram');
-
-// creating a client socket
+// var readline = require('readline');
 var client = udp.createSocket('udp4');
 
 client.on('message', function (msg, info) {
-  console.log('Data received from server : ' + msg.toString());
+  // console.log('Data received from server : ' + msg.toString());
 });
 
 function sendCommand(command) {
-  // var data = Buffer.from(command);
-  // client.send(data, 2222, 'localhost', function (error) {
   client.send(Buffer.from(command, "utf-8"), 2222, 'localhost', function (error) {
     if (error) {
       client.close();
@@ -17,7 +14,26 @@ function sendCommand(command) {
   });
 }
 
+// const rl = readline.createInterface({
+//   input: process.stdin,
+//   output: process.stdout
+// });
+
 process.stdin.on('data', function (data) {
-  console.log('vc apertou: ' + data);
-  sendCommand(data);
+  sendCommand(data.toString());
 });
+
+// function init() {
+//   new Promise((resolve, reject) => {
+//     rl.question('Digite uma tecla para continuar: ', (answer) => {
+//       resolve(answer);
+//     }
+//     );
+//   }).then((answer) => {
+//     sendCommand(answer);
+//     init();
+//   }
+//   );
+// }
+  
+// init();
